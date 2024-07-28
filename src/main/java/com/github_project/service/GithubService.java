@@ -1,10 +1,12 @@
 package com.github_project.service;
 
 import com.github_project.dto.RepoWithBranchesResponseDto;
+import com.github_project.error.UsernameNotFoundException;
 import com.github_project.model.Branch;
 import com.github_project.model.Commit;
 import com.github_project.model.Repo;
 import com.github_project.proxy.SampleGithubProxy;
+import feign.FeignException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,20 +22,24 @@ public class GithubService {
     }
 
     public List<RepoWithBranchesResponseDto> getRepos(String username) {
-        List<Repo> allRepos = githubClient.getAllRepos(username);
+        try {
+            List<Repo> allRepos = githubClient.getAllRepos(username);
 
-        List<RepoWithBranchesResponseDto> response = allRepos.stream()
-                .filter(repo -> !repo.fork())
-                .map(repo -> {
-                    List<Branch> branches = githubClient.getBranches(repo.owner().login(), repo.name());
-                    List<Branch> branchesDtos = branches.stream()
-                            .map(branch -> new Branch(branch.name(), new Commit(branch.commit().sha())))
-                            .collect(Collectors.toList());
+            List<RepoWithBranchesResponseDto> response = allRepos.stream()
+                    .filter(repo -> !repo.fork())
+                    .map(repo -> {
+                        List<Branch> allBranches = githubClient.getBranches(repo.owner().login(), repo.name());
+                        List<Branch> branches = allBranches.stream()
+                                .map(branch -> new Branch(branch.name(), new Commit(branch.commit().sha())))
+                                .collect(Collectors.toList());
 
-                    return new RepoWithBranchesResponseDto(repo.name(), repo.owner().login(), branchesDtos);
-                })
-                .collect(Collectors.toList());
+                        return new RepoWithBranchesResponseDto(repo.name(), repo.owner().login(), branches);
+                    })
+                    .collect(Collectors.toList());
 
-        return response;
+            return response;
+        } catch (FeignException exception) {
+            throw new UsernameNotFoundException("User: " + username + " not found");
+        }
     }
 }
