@@ -11,4 +11,8 @@ public interface SampleGithubProxy {
 
     @GetMapping("/users/{username}/repos")
     List<Repo> getAllRepos(@PathVariable("username") String username);
+
+    @GetMapping("/repos/{owner}/{repo}/branches")
+    List<Branch> getBranches(@PathVariable("owner") String owner,
+                             @PathVariable("repo") String repo);
 }
