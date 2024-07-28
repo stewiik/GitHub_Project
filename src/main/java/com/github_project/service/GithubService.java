@@ -27,10 +27,11 @@ public class GithubService {
         try {
             List<Repo> allRepos = githubClient.getAllRepos(username);
 
-            List<RepoWithBranchesResponseDto> response = allRepos.stream()
+            return allRepos.stream()
                     .filter(repo -> !repo.fork())
                     .map(repo -> {
                         List<Branch> allBranches = githubClient.getBranches(repo.owner().login(), repo.name());
+
                         List<Branch> branches = allBranches.stream()
                                 .map(branch -> new Branch(branch.name(), new Commit(branch.commit().sha())))
                                 .collect(Collectors.toList());
@@ -38,10 +39,8 @@ public class GithubService {
                         return new RepoWithBranchesResponseDto(repo.name(), repo.owner().login(), branches);
                     })
                     .collect(Collectors.toList());
-
-            return response;
         } catch (FeignException exception) {
-            log.error("ERROR: User not found");
+            log.error("ERROR: User " + username + " not found");
             throw new UsernameNotFoundException("User: " + username + " not found");
         }
     }
