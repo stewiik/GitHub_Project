@@ -7,12 +7,14 @@ import com.github_project.model.Commit;
 import com.github_project.model.Repo;
 import com.github_project.proxy.SampleGithubProxy;
 import feign.FeignException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class GithubService {
 
     SampleGithubProxy githubClient;
@@ -39,6 +41,7 @@ public class GithubService {
 
             return response;
         } catch (FeignException exception) {
+            log.error("ERROR: User not found");
             throw new UsernameNotFoundException("User: " + username + " not found");
         }
     }
