@@ -1,11 +1,11 @@
-package com.github_project.service;
+package com.github_project.domain.service;
 
-import com.github_project.dto.RepoWithBranchesResponseDto;
-import com.github_project.error.UsernameNotFoundException;
-import com.github_project.model.Branch;
-import com.github_project.model.Commit;
-import com.github_project.model.Repo;
-import com.github_project.proxy.SampleGithubProxy;
+import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
+import com.github_project.validation.error.exception.UsernameNotFoundException;
+import com.github_project.domain.model.Branch;
+import com.github_project.domain.model.Commit;
+import com.github_project.domain.model.Repo;
+import com.github_project.domain.proxy.SampleGithubProxy;
 import feign.FeignException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

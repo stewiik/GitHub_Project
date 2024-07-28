@@ -1,6 +1,6 @@
-package com.github_project.dto;
+package com.github_project.infrastructure.controller.dto;
 
-import com.github_project.model.Branch;
+import com.github_project.domain.model.Branch;
 
 import java.util.List;
 

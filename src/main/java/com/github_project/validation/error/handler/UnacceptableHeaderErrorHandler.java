@@ -1,5 +1,6 @@
-package com.github_project.error;
+package com.github_project.validation.error.handler;
 
+import com.github_project.validation.error.dto.ErrorResponseDto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

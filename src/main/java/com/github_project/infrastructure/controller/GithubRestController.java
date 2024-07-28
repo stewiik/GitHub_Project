@@ -1,11 +1,10 @@
-package com.github_project.controller;
+package com.github_project.infrastructure.controller;
 
-import com.github_project.dto.RepoWithBranchesResponseDto;
-import com.github_project.error.UnacceptableHeaderErrorHandler;
-import com.github_project.service.GithubService;
+import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
+import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
+import com.github_project.domain.service.GithubService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
