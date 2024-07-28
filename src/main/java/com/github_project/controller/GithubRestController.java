@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class GuthubRestController {
+public class GithubRestController {
     GithubService githubService;
 
-    public GuthubRestController(GithubService githubService) {
+    public GithubRestController(GithubService githubService) {
         this.githubService = githubService;
     }
 
