@@ -14,13 +14,21 @@ public class GithubService {
         this.githubClient = githubClient;
     }
 
-    public List<Repo> getRepos(String username) {
+    public List<RepoWithBranchesResponseDto> getRepos(String username) {
         List<Repo> allRepos = githubClient.getAllRepos(username);
 
-        List<Repo> noForkRepos = allRepos.stream()
+        List<RepoWithBranchesResponseDto> response = allRepos.stream()
                 .filter(repo -> !repo.fork())
+                .map(repo -> {
+                    List<Branch> branches = githubClient.getBranches(repo.owner().login(), repo.name());
+                    List<Branch> branchesDtos = branches.stream()
+                            .map(branch -> new Branch(branch.name(), new Commit(branch.commit().sha())))
+                            .collect(Collectors.toList());
+
+                    return new RepoWithBranchesResponseDto(repo.name(), repo.owner().login(), branchesDtos);
+                })
                 .collect(Collectors.toList());
 
-        return noForkRepos;
+        return response;
     }
 }
