@@ -19,6 +19,6 @@ public class UnacceptableHeaderErrorHandler {
         log.warn("HttpMediaTypeNotAcceptableException error while accessing repositories");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorResponseDto(HttpStatus.NOT_ACCEPTABLE.value(), "Unsupported Accept header"));
+                .body(new ErrorResponseDto(HttpStatus.NOT_ACCEPTABLE.value(), "Unsupported Accept header. Must be application/json"));
     }
 }

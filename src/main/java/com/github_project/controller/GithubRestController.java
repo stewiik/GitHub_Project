@@ -32,7 +32,7 @@ public class GithubRestController {
 
         if (!MediaType.APPLICATION_JSON_VALUE.equals(header)) {
             log.error("Unsupported Accept header: " + header);
-            return new ResponseEntity<>(handler.handleHttpMediaTypeNotAcceptableException(new HttpMediaTypeNotAcceptableException(List.of(MediaType.APPLICATION_JSON))), HttpStatus.NOT_ACCEPTABLE);
+            throw new HttpMediaTypeNotAcceptableException(header);
         }
 
         List<RepoWithBranchesResponseDto> repos = githubService.getRepos(username);
