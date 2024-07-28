@@ -1,5 +1,10 @@
-package com.github_project;
+package com.github_project.service;
 
+import com.github_project.dto.RepoWithBranchesResponseDto;
+import com.github_project.model.Branch;
+import com.github_project.model.Commit;
+import com.github_project.model.Repo;
+import com.github_project.proxy.SampleGithubProxy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

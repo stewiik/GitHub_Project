@@ -1,4 +1,4 @@
-package com.github_project;
+package com.github_project.model;
 
 public record Commit(String sha) {
 }

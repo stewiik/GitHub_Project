@@ -1,5 +1,7 @@
-package com.github_project;
+package com.github_project.proxy;
 
+import com.github_project.model.Branch;
+import com.github_project.model.Repo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
