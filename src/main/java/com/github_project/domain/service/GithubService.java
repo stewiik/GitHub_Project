@@ -4,7 +4,7 @@ import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponse
 import com.github_project.validation.error.exception.UsernameNotFoundException;
 import com.github_project.domain.model.Branch;
 import com.github_project.domain.model.Commit;
-import com.github_project.domain.model.Repo;
+import com.github_project.domain.model.Repository;
 import com.github_project.domain.proxy.SampleGithubProxy;
 import feign.FeignException;
 import lombok.extern.log4j.Log4j2;
@@ -25,7 +25,7 @@ public class GithubService {
 
     public List<RepoWithBranchesResponseDto> getRepos(String username) {
         try {
-            List<Repo> allRepos = githubClient.getAllRepos(username);
+            List<Repository> allRepos = githubClient.getAllRepos(username);
 
             return allRepos.stream()
                     .filter(repo -> !repo.fork())
