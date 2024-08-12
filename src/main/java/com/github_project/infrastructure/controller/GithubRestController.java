@@ -1,5 +1,7 @@
 package com.github_project.infrastructure.controller;
 
+import com.github_project.domain.model.Repo;
+import com.github_project.domain.service.RepoRetriever;
 import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
 import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
 import com.github_project.domain.service.GithubService;
@@ -15,13 +17,16 @@ import java.util.List;
 @RestController
 @Log4j2
 public class GithubRestController {
-    GithubService githubService;
+    private final GithubService githubService;
 
-    UnacceptableHeaderErrorHandler handler;
+    private final UnacceptableHeaderErrorHandler handler;
 
-    public GithubRestController(GithubService githubService, UnacceptableHeaderErrorHandler handler) {
+    private final RepoRetriever repoRetriever;
+
+    public GithubRestController(GithubService githubService, UnacceptableHeaderErrorHandler handler, RepoRetriever repoRetriever) {
         this.githubService = githubService;
         this.handler = handler;
+        this.repoRetriever = repoRetriever;
     }
 
     @GetMapping(value = "/repositories/{username}",
@@ -34,7 +39,15 @@ public class GithubRestController {
             throw new HttpMediaTypeNotAcceptableException(header);
         }
 
+        List<Repo> allRepos = repoRetriever.findAll();
+
         List<RepoWithBranchesResponseDto> repos = githubService.getRepos(username);
         return ResponseEntity.ok(repos);
+    }
+
+    @GetMapping("/database")
+    public ResponseEntity<List<Repo>> getInfoFromDb() {
+        List<Repo> allRepos = repoRetriever.findAll();
+        return ResponseEntity.ok(allRepos);
     }
 }
