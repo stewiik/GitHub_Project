@@ -1,12 +1,9 @@
 package com.github_project.infrastructure.controller;
 
 import com.github_project.domain.model.Repo;
-import com.github_project.domain.service.RepoAdder;
-import com.github_project.domain.service.RepoDeleter;
-import com.github_project.domain.service.RepoRetriever;
+import com.github_project.domain.service.*;
 import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
 import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
-import com.github_project.domain.service.GithubService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,6 +24,7 @@ public class GithubRestController {
     private final RepoRetriever repoRetriever;
     private final RepoAdder repoAdder;
     private final RepoDeleter repoDeleter;
+    private final RepoUpdater repoUpdater;
 
 
     @GetMapping(value = "/repositories/{username}",
@@ -67,6 +65,13 @@ public class GithubRestController {
     public ResponseEntity<Void> deleteRepoById(@PathVariable Long id) {
         repoRetriever.existsById(id);
         repoDeleter.deleteRepo(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Void> updateRepo(@PathVariable Long id,
+                                           @RequestBody @Valid Repo newRepo) {
+        repoUpdater.updateRepo(id, newRepo);
         return ResponseEntity.noContent().build();
     }
 }
