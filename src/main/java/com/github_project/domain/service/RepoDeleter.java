@@ -1,21 +1,24 @@
 package com.github_project.domain.service;
 
 import com.github_project.domain.repository.GithubRepository;
-import com.github_project.validation.error.exception.RepoNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 @Service
 @Log4j2
+@Transactional
 public class RepoDeleter {
     private final GithubRepository githubRepository;
+    private final RepoRetriever repoRetriever;
 
-    public RepoDeleter(GithubRepository githubRepository) {
+    public RepoDeleter(GithubRepository githubRepository, RepoRetriever repoRetriever) {
         this.githubRepository = githubRepository;
+        this.repoRetriever = repoRetriever;
     }
 
     public void deleteRepo(Long id) {
-        githubRepository.existsById(id);
+        repoRetriever.findById(id);
         log.info("deleting repo by id: " + id);
         githubRepository.deleteById(id);
     }

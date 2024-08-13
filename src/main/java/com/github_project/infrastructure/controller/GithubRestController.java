@@ -3,7 +3,10 @@ package com.github_project.infrastructure.controller;
 import com.github_project.domain.model.Repo;
 import com.github_project.domain.service.*;
 import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
-import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
+import com.github_project.infrastructure.controller.dto.request.CreateRepoRequestDto;
+import com.github_project.infrastructure.controller.dto.request.PartiallyUpdateRepoRequestDto;
+import com.github_project.infrastructure.controller.dto.request.UpdateRepoRequestDto;
+import com.github_project.infrastructure.controller.dto.response.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,12 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.github_project.infrastructure.controller.GithubMapper.*;
+
 @RestController
 @Log4j2
 @AllArgsConstructor
 public class GithubRestController {
     private final GithubService githubService;
-    private final UnacceptableHeaderErrorHandler handler;
     private final RepoRetriever repoRetriever;
     private final RepoAdder repoAdder;
     private final RepoDeleter repoDeleter;
@@ -40,7 +44,6 @@ public class GithubRestController {
             throw new HttpMediaTypeNotAcceptableException(header);
         }
 
-
         repoRetriever.findAll(pageable);
 
         List<RepoWithBranchesResponseDto> repos = githubService.getRepos(username);
@@ -48,41 +51,50 @@ public class GithubRestController {
     }
 
     @GetMapping("/database")
-    public ResponseEntity<List<Repo>> getAllReposFromDb(@PageableDefault(page = 0, size = 15) Pageable pageable) {
+    public ResponseEntity<GetAllReposResponseDto> getAllReposFromDb(@PageableDefault(page = 0, size = 15) Pageable pageable) {
         List<Repo> allRepos = repoRetriever.findAll(pageable);
-        return ResponseEntity.ok(allRepos);
+        GetAllReposResponseDto response = mapFromRepoToGetAllReposResponseDto(allRepos);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Repo> getRepoFromDb(@PathVariable Long id) {
+    public ResponseEntity<GetRepoResponseDto> getRepoFromDb(@PathVariable Long id) {
         Repo repo = repoRetriever.findById(id);
-        return ResponseEntity.ok(repo);
+        GetRepoResponseDto response = mapFromRepoToGetRepoResponseDto(repo);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("repo")
-    public ResponseEntity<Repo> postRepo(@RequestBody @Valid Repo repo) {
+    public ResponseEntity<CreateRepoResponseDto> postRepo(@RequestBody @Valid CreateRepoRequestDto repoRequest) {
+        Repo repo = mapFromCreateRepoRequestDtoToRepo(repoRequest);
         Repo savedRepo = repoAdder.addRepo(repo);
-        return ResponseEntity.ok(savedRepo);
+        CreateRepoResponseDto response = mapFromRepoToCreateRepoResponseDto(savedRepo);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteRepoById(@PathVariable Long id) {
+    public ResponseEntity<DeleteRepoResponseDto> deleteRepoById(@PathVariable Long id) {
         repoDeleter.deleteRepo(id);
-        return ResponseEntity.noContent().build();
+        DeleteRepoResponseDto response = mapFromRepoToDeleteRepoResponseDto(id);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> updateRepo(@PathVariable Long id,
-                                           @RequestBody @Valid Repo updatedRepo) {
-        repoUpdater.updateById(id, updatedRepo);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<UpdateRepoResponseDto> updateRepo(@PathVariable Long id,
+                                                            @RequestBody @Valid UpdateRepoRequestDto updatedRepoRequest) {
+        Repo newRepo = mapFromUpdateRepoRequestDtoToRepo(updatedRepoRequest);
+        repoUpdater.updateById(id, newRepo);
+        UpdateRepoResponseDto response = mapFromRepoToUpdateRepoResponseDto(newRepo);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Repo> partiallyUpdateRepo(@PathVariable Long id,
-                                                    @RequestBody Repo updatedRepo) {
+    public ResponseEntity<PartiallyUpdateRepoResponseDto> partiallyUpdateRepo(@PathVariable Long id,
+                                                                              @RequestBody PartiallyUpdateRepoRequestDto updatedRepoRequest) {
+        Repo updatedRepo = mapFromPartiallyUpdateRepoRequestDtoToRepo(updatedRepoRequest);
         Repo savedRepo = repoUpdater.updatePartiallyById(id, updatedRepo);
-        return ResponseEntity.ok(savedRepo);
+        PartiallyUpdateRepoResponseDto response = mapFromRepoToPartiallyUpdateRepoResponseDto(savedRepo);
+        return ResponseEntity.ok(response);
     }
 
 }

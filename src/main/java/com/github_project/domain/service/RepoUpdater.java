@@ -20,7 +20,7 @@ public class RepoUpdater {
 
     public void updateById(Long id, Repo repoFromRequest) {
         log.info("updating repo with id: " + id);
-        githubRepository.existsById(id);
+        repoRetriever.findById(id);
         githubRepository.updateById(id, repoFromRequest);
     }
 
