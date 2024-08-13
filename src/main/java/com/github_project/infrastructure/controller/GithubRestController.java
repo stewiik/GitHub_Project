@@ -50,4 +50,10 @@ public class GithubRestController {
         List<Repo> allRepos = repoRetriever.findAll();
         return ResponseEntity.ok(allRepos);
     }
+
+    @GetMapping("/database/{id}")
+    public ResponseEntity<Repo> getRepoFromDb(@PathVariable Long id) {
+        Repo repo = repoRetriever.findById(id);
+        return ResponseEntity.ok(repo);
+    }
 }
