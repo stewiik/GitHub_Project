@@ -7,6 +7,8 @@ import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandle
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,8 @@ public class GithubRestController {
 
     @GetMapping(value = "/repositories/{username}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getReposWithBranches(@PathVariable String username,
+    public ResponseEntity<?> getReposWithBranches(@PageableDefault(page=0, size=15) Pageable pageable,
+                                                  @PathVariable String username,
                                                   @RequestHeader(HttpHeaders.ACCEPT) String header) throws HttpMediaTypeNotAcceptableException {
 
         if (!MediaType.APPLICATION_JSON_VALUE.equals(header)) {
@@ -37,15 +40,15 @@ public class GithubRestController {
             throw new HttpMediaTypeNotAcceptableException(header);
         }
 
-        List<Repo> allRepos = repoRetriever.findAll();
+        List<Repo> allRepos = repoRetriever.findAll(pageable);
 
         List<RepoWithBranchesResponseDto> repos = githubService.getRepos(username);
         return ResponseEntity.ok(repos);
     }
 
     @GetMapping("/database")
-    public ResponseEntity<List<Repo>> getInfoFromDb() {
-        List<Repo> allRepos = repoRetriever.findAll();
+    public ResponseEntity<List<Repo>> getAllReposFromDb(@PageableDefault(page=0, size=15) Pageable pageable) {
+        List<Repo> allRepos = repoRetriever.findAll(pageable);
         return ResponseEntity.ok(allRepos);
     }
 

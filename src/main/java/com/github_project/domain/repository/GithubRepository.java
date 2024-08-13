@@ -1,11 +1,11 @@
 package com.github_project.domain.repository;
 
 import com.github_project.domain.model.Repo;
-import org.springframework.context.event.DefaultEventListenerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ public interface GithubRepository extends Repository<Repo, Long> {
     Repo save(Repo repo);
 
     @Query("SELECT r FROM Repo r")
-    List<Repo> findAll();
+    List<Repo> findAll(Pageable pageable);
 
     @Query("SELECT r FROM Repo r WHERE r.id = :id")
     Optional<Repo> findById(Long id);
