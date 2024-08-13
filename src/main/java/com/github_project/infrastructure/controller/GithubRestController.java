@@ -1,10 +1,12 @@
 package com.github_project.infrastructure.controller;
 
 import com.github_project.domain.model.Repo;
+import com.github_project.domain.service.RepoAdder;
 import com.github_project.domain.service.RepoRetriever;
 import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
 import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
 import com.github_project.domain.service.GithubService;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,10 +25,13 @@ public class GithubRestController {
 
     private final RepoRetriever repoRetriever;
 
-    public GithubRestController(GithubService githubService, UnacceptableHeaderErrorHandler handler, RepoRetriever repoRetriever) {
+    private final RepoAdder repoAdder;
+
+    public GithubRestController(GithubService githubService, UnacceptableHeaderErrorHandler handler, RepoRetriever repoRetriever, RepoAdder repoAdder) {
         this.githubService = githubService;
         this.handler = handler;
         this.repoRetriever = repoRetriever;
+        this.repoAdder = repoAdder;
     }
 
     @GetMapping(value = "/repositories/{username}",
@@ -51,9 +56,15 @@ public class GithubRestController {
         return ResponseEntity.ok(allRepos);
     }
 
-    @GetMapping("/database/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Repo> getRepoFromDb(@PathVariable Long id) {
         Repo repo = repoRetriever.findById(id);
         return ResponseEntity.ok(repo);
+    }
+
+    @PostMapping("repo")
+    public ResponseEntity<Repo> postRepo(@RequestBody @Valid Repo repo) {
+        Repo savedRepo = repoAdder.addRepo(repo);
+        return ResponseEntity.ok(savedRepo);
     }
 }

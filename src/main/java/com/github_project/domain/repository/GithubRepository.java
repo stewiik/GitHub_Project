@@ -13,4 +13,5 @@ public interface GithubRepository extends Repository<Repo, Long> {
     List<Repo> findAll();
 
     Optional<Repo> findById(Long id);
+
 }
