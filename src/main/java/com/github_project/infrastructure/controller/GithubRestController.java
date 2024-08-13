@@ -31,7 +31,7 @@ public class GithubRestController {
 
     @GetMapping(value = "/repositories/{username}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getReposWithBranches(@PageableDefault(page=0, size=15) Pageable pageable,
+    public ResponseEntity<?> getReposWithBranches(@PageableDefault(page = 0, size = 20) Pageable pageable,
                                                   @PathVariable String username,
                                                   @RequestHeader(HttpHeaders.ACCEPT) String header) throws HttpMediaTypeNotAcceptableException {
 
@@ -40,14 +40,15 @@ public class GithubRestController {
             throw new HttpMediaTypeNotAcceptableException(header);
         }
 
-        List<Repo> allRepos = repoRetriever.findAll(pageable);
+
+        repoRetriever.findAll(pageable);
 
         List<RepoWithBranchesResponseDto> repos = githubService.getRepos(username);
         return ResponseEntity.ok(repos);
     }
 
     @GetMapping("/database")
-    public ResponseEntity<List<Repo>> getAllReposFromDb(@PageableDefault(page=0, size=15) Pageable pageable) {
+    public ResponseEntity<List<Repo>> getAllReposFromDb(@PageableDefault(page = 0, size = 15) Pageable pageable) {
         List<Repo> allRepos = repoRetriever.findAll(pageable);
         return ResponseEntity.ok(allRepos);
     }
