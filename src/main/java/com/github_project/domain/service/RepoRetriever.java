@@ -27,4 +27,9 @@ public class RepoRetriever {
         return githubRepository.findById(id)
                 .orElseThrow(() -> new RepoNotFoundException("Repo with id: " + id + " not found"));
     }
+
+    public Repo existsById(Long id) {
+        return githubRepository.findById(id)
+                .orElseThrow(() -> new RepoNotFoundException("Repo with id: " + id + " not found"));
+    }
 }

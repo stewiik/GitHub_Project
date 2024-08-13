@@ -2,11 +2,13 @@ package com.github_project.infrastructure.controller;
 
 import com.github_project.domain.model.Repo;
 import com.github_project.domain.service.RepoAdder;
+import com.github_project.domain.service.RepoDeleter;
 import com.github_project.domain.service.RepoRetriever;
 import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
 import com.github_project.validation.error.handler.UnacceptableHeaderErrorHandler;
 import com.github_project.domain.service.GithubService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,21 +20,14 @@ import java.util.List;
 
 @RestController
 @Log4j2
+@AllArgsConstructor
 public class GithubRestController {
     private final GithubService githubService;
-
     private final UnacceptableHeaderErrorHandler handler;
-
     private final RepoRetriever repoRetriever;
-
     private final RepoAdder repoAdder;
+    private final RepoDeleter repoDeleter;
 
-    public GithubRestController(GithubService githubService, UnacceptableHeaderErrorHandler handler, RepoRetriever repoRetriever, RepoAdder repoAdder) {
-        this.githubService = githubService;
-        this.handler = handler;
-        this.repoRetriever = repoRetriever;
-        this.repoAdder = repoAdder;
-    }
 
     @GetMapping(value = "/repositories/{username}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,5 +61,12 @@ public class GithubRestController {
     public ResponseEntity<Repo> postRepo(@RequestBody @Valid Repo repo) {
         Repo savedRepo = repoAdder.addRepo(repo);
         return ResponseEntity.ok(savedRepo);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteRepoById(@PathVariable Long id) {
+        repoRetriever.existsById(id);
+        repoDeleter.deleteRepo(id);
+        return ResponseEntity.noContent().build();
     }
 }
