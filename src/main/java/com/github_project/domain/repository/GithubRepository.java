@@ -1,6 +1,7 @@
 package com.github_project.domain.repository;
 
 import com.github_project.domain.model.Repo;
+import org.springframework.context.event.DefaultEventListenerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -12,10 +13,14 @@ public interface GithubRepository extends Repository<Repo, Long> {
 
     Repo save(Repo repo);
 
+    @Query("SELECT r FROM Repo r")
     List<Repo> findAll();
 
+    @Query("SELECT r FROM Repo r WHERE r.id = :id")
     Optional<Repo> findById(Long id);
 
+    @Modifying
+    @Query("DELETE FROM Repo r WHERE r.id = :id")
     void deleteById(Long id);
 
     @Modifying
