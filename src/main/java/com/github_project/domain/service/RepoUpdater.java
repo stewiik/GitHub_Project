@@ -11,16 +11,14 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class RepoUpdater {
     private final GithubRepository githubRepository;
-    private final RepoRetriever repoRetriever;
 
-    public RepoUpdater(GithubRepository githubRepository, RepoRetriever repoRetriever) {
+    public RepoUpdater(GithubRepository githubRepository) {
         this.githubRepository = githubRepository;
-        this.repoRetriever = repoRetriever;
     }
 
     public void updateRepo(Long id, Repo newRepo) {
         log.info("updating repo with id: " + id);
-        repoRetriever.existsById(id);
+        githubRepository.existsById(id);
         githubRepository.updateById(id, newRepo);
     }
 }

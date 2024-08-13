@@ -15,6 +15,7 @@ public class RepoDeleter {
     }
 
     public void deleteRepo(Long id) {
+        githubRepository.existsById(id);
         log.info("deleting repo by id: " + id);
         githubRepository.deleteById(id);
     }

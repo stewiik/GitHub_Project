@@ -63,7 +63,6 @@ public class GithubRestController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteRepoById(@PathVariable Long id) {
-        repoRetriever.existsById(id);
         repoDeleter.deleteRepo(id);
         return ResponseEntity.noContent().build();
     }
