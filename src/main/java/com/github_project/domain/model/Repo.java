@@ -1,6 +1,7 @@
 package com.github_project.domain.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Table(name = "repo")
+@Builder
 public class Repo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

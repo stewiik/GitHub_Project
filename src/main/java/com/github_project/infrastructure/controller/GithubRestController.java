@@ -69,8 +69,16 @@ public class GithubRestController {
 
     @PutMapping("{id}")
     public ResponseEntity<Void> updateRepo(@PathVariable Long id,
-                                           @RequestBody @Valid Repo newRepo) {
-        repoUpdater.updateRepo(id, newRepo);
+                                           @RequestBody @Valid Repo updatedRepo) {
+        repoUpdater.updateById(id, updatedRepo);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<Repo> partiallyUpdateRepo(@PathVariable Long id,
+                                                    @RequestBody Repo updatedRepo) {
+        Repo savedRepo = repoUpdater.updatePartiallyById(id, updatedRepo);
+        return ResponseEntity.ok(savedRepo);
+    }
+
 }
