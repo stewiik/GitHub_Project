@@ -1,4 +1,4 @@
-package com.github_project.infrastructure.controller.dto;
+package com.github_project.infrastructure.controller.dto.response;
 
 import com.github_project.domain.model.Branch;
 

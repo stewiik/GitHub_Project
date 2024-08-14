@@ -2,7 +2,7 @@ package com.github_project.infrastructure.controller;
 
 import com.github_project.domain.model.Repo;
 import com.github_project.domain.service.*;
-import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
+import com.github_project.infrastructure.controller.dto.response.RepoWithBranchesResponseDto;
 import com.github_project.infrastructure.controller.dto.request.CreateRepoRequestDto;
 import com.github_project.infrastructure.controller.dto.request.PartiallyUpdateRepoRequestDto;
 import com.github_project.infrastructure.controller.dto.request.UpdateRepoRequestDto;
@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

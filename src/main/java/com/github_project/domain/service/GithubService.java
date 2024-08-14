@@ -1,7 +1,7 @@
 package com.github_project.domain.service;
 
 import com.github_project.domain.model.Repo;
-import com.github_project.infrastructure.controller.dto.RepoWithBranchesResponseDto;
+import com.github_project.infrastructure.controller.dto.response.RepoWithBranchesResponseDto;
 import com.github_project.validation.error.exception.UsernameNotFoundException;
 import com.github_project.domain.model.Branch;
 import com.github_project.domain.model.Commit;
