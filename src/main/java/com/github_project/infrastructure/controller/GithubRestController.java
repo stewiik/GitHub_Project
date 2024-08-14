@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import static com.github_project.infrastructure.controller.GithubMapper.*;
 @RestController
 @Log4j2
 @AllArgsConstructor
+@Validated
 public class GithubRestController {
     private final GithubService githubService;
     private final RepoRetriever repoRetriever;
@@ -52,7 +54,7 @@ public class GithubRestController {
     }
 
     @GetMapping("/database")
-    public ResponseEntity<GetAllReposResponseDto> getAllReposFromDb(@PageableDefault(page = 0, size = 15) Pageable pageable) {
+    public ResponseEntity<GetAllReposResponseDto> getAllReposFromDb(@PageableDefault(page = 0, size = 30) Pageable pageable) {
         List<Repo> allRepos = repoRetriever.findAll(pageable);
         GetAllReposResponseDto response = mapFromRepoToGetAllReposResponseDto(allRepos);
         return ResponseEntity.ok(response);
@@ -65,31 +67,31 @@ public class GithubRestController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("repo")
-    public ResponseEntity<CreateRepoResponseDto> postRepo(@RequestBody @Valid CreateRepoRequestDto repoRequest) {
+    @PostMapping("/repo")
+    public ResponseEntity<?> postRepo(@RequestBody @Valid CreateRepoRequestDto repoRequest) {
         Repo repo = mapFromCreateRepoRequestDtoToRepo(repoRequest);
         Repo savedRepo = repoAdder.addRepo(repo);
         CreateRepoResponseDto response = mapFromRepoToCreateRepoResponseDto(savedRepo);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<DeleteRepoResponseDto> deleteRepoById(@PathVariable Long id) {
         repoDeleter.deleteRepo(id);
         DeleteRepoResponseDto response = mapFromRepoToDeleteRepoResponseDto(id);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<UpdateRepoResponseDto> updateRepo(@PathVariable Long id,
-                                                            @RequestBody @Valid UpdateRepoRequestDto updatedRepoRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateRepo(@PathVariable Long id,
+                                        @RequestBody @Valid UpdateRepoRequestDto updatedRepoRequest) {
         Repo newRepo = mapFromUpdateRepoRequestDtoToRepo(updatedRepoRequest);
         repoUpdater.updateById(id, newRepo);
         UpdateRepoResponseDto response = mapFromRepoToUpdateRepoResponseDto(newRepo);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<PartiallyUpdateRepoResponseDto> partiallyUpdateRepo(@PathVariable Long id,
                                                                               @RequestBody PartiallyUpdateRepoRequestDto updatedRepoRequest) {
         Repo updatedRepo = mapFromPartiallyUpdateRepoRequestDtoToRepo(updatedRepoRequest);

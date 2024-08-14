@@ -9,6 +9,3 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
-  #    volumes:
-  #      - local_pgdata:/var/lib/postgresql/data
-  #      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
